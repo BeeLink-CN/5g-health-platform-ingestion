@@ -3,8 +3,18 @@ import { randomUUID } from 'crypto';
 
 // Configuration
 const MQTT_URL = process.env.MQTT_URL || 'mqtt://localhost:1883';
-const PATIENT_ID = process.argv[2] || 'patient-001';
+// Accept UUID from command line or generate one
+const PATIENT_ID = process.argv[2] || '550e8400-e29b-41d4-a716-446655440000';
 const INTERVAL_MS = 2000;
+
+// Validate patient_id is a valid UUID format
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+if (!UUID_REGEX.test(PATIENT_ID)) {
+    console.error('❌ ERROR: patient_id must be a valid UUID');
+    console.error(`   Received: ${PATIENT_ID}`);
+    console.error('   Example: npm run simulate 550e8400-e29b-41d4-a716-446655440000');
+    process.exit(1);
+}
 
 interface VitalsRecord {
     id: string;
@@ -31,7 +41,7 @@ function generateRandomVitals(): VitalsRecord {
             diastolic: Math.floor(Math.random() * 20) + 70, // 70-90 mmHg
         },
         temperature: parseFloat((Math.random() * 2 + 36.0).toFixed(2)), // 36.0-38.0°C
-        oxygen_saturation: parseFloat((Math.random() * 5 + 95.0).toFixed(2)), // 95.0-100.0%
+        oxygen_saturation: Math.floor(Math.random() * 6) + 95, // 95-100 (integer per contracts)
         device_id: `device-${PATIENT_ID}`,
     };
 }

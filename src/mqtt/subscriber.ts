@@ -127,7 +127,8 @@ class MqttSubscriber {
                 return;
             }
 
-            await natsPublisher.publish(event);
+            // Publish to NATS with retry logic (MVP approach)
+            await this.publishWithRetry(event, 3);
 
             const duration = Date.now() - startTime;
             logger.info(
@@ -162,6 +163,60 @@ class MqttSubscriber {
 
     isConnected(): boolean {
         return this.connected;
+    }
+
+    /**
+     * Publish event to NATS with exponential backoff retry
+     * MVP approach: simple retry with backoff
+     * TODO: In production, consider outbox table pattern for exactly-once delivery
+     */
+    private async publishWithRetry(
+        event: any,
+        maxRetries: number = 3
+    ): Promise<void> {
+        let lastError: Error | undefined;
+
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                await natsPublisher.publish(event);
+                if (attempt > 0) {
+                    logger.info(
+                        { event_id: event.event_id, attempt: attempt + 1 },
+                        'Event published after retry'
+                    );
+                }
+                return; // Success
+            } catch (error) {
+                lastError = error as Error;
+                logger.warn(
+                    {
+                        error,
+                        event_id: event.event_id,
+                        attempt: attempt + 1,
+                        max_retries: maxRetries,
+                    },
+                    'NATS publish failed, retrying...'
+                );
+
+                if (attempt < maxRetries - 1) {
+                    // Exponential backoff: 100ms, 200ms, 400ms
+                    const delayMs = 100 * Math.pow(2, attempt);
+                    await new Promise((resolve) => setTimeout(resolve, delayMs));
+                }
+            }
+        }
+
+        // All retries exhausted
+        logger.error(
+            {
+                error: lastError,
+                event_id: event.event_id,
+                patient_id: event.payload.patient_id,
+            },
+            'Failed to publish event after all retries - DATA PERSISTED IN DB BUT EVENT LOST'
+        );
+        // Note: Data is already in DB. Event lost but queryable via DB.
+        // TODO: Write to outbox table for background publisher in production
     }
 }
 

@@ -154,21 +154,21 @@ docker compose up -d
 Publishes random vitals every 2 seconds to MQTT:
 
 ```bash
-# Default patient
+# Default patient (uses default UUID)
 npm run simulate
 
-# Specific patient
-npm run simulate patient-123
+# Specific patient (must be valid UUID)
+npm run simulate 550e8400-e29b-41d4-a716-446655440001
 ```
 
 Example output:
 
 ```
-[1] Published to home/patient-001/vitals
+[1] Published to home/550e8400-e29b-41d4-a716-446655440000/vitals
     ❤️  Heart Rate: 75 bpm
     🩸 BP: 120/80 mmHg
     🌡️  Temp: 37.2°C
-    💨 SpO2: 98.5%
+    💨 SpO2: 98%
 ```
 
 ### Unit Tests
@@ -249,7 +249,7 @@ Payload conforms to `contracts/schemas/domain/vitals.json`:
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
-  "patient_id": "patient-001",
+  "patient_id": "550e8400-e29b-41d4-a716-446655440001",
   "recorded_at": "2024-01-01T12:00:00Z",
   "heart_rate": 72,
   "blood_pressure": {
@@ -257,7 +257,7 @@ Payload conforms to `contracts/schemas/domain/vitals.json`:
     "diastolic": 80
   },
   "temperature": 37.0,
-  "oxygen_saturation": 98.5,
+  "oxygen_saturation": 98,
   "device_id": "device-001"
 }
 ```
@@ -275,7 +275,7 @@ Payload conforms to `contracts/schemas/events/vitals-recorded.json`:
   "event_id": "660e8400-e29b-41d4-a716-446655440001",
   "timestamp": "2024-01-01T12:00:00.123Z",
   "payload": {
-    "patient_id": "patient-001",
+    "patient_id": "550e8400-e29b-41d4-a716-446655440001",
     "vitals": { ... }
   }
 }
