@@ -1,0 +1,4 @@
+[submodule "contracts"]
+	path = contracts
+	url = https://github.com/YOUR_ORG/5g-health-platform-contracts.git
+	branch = main
