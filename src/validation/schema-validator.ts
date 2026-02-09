@@ -1,7 +1,7 @@
 import Ajv, { ValidateFunction } from 'ajv';
 import addFormats from 'ajv-formats';
 import { readFileSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { resolve } from 'path';
 import { logger } from '../config/logger';
 import { config } from '../config';
 

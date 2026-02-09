@@ -1,7 +1,7 @@
 import mqtt, { MqttClient } from 'mqtt';
 import { config } from '../config';
 import { logger } from '../config/logger';
-import { schemaValidator, VitalsRecord } from '../validation/schema-validator';
+import { schemaValidator } from '../validation/schema-validator';
 import { db } from '../db/client';
 import { natsPublisher } from '../nats/publisher';
 import { randomUUID } from 'crypto';

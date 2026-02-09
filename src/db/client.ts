@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool } from 'pg';
 import { config } from '../config';
 import { logger } from '../config/logger';
 import { VitalsRecord } from '../validation/schema-validator';
@@ -74,7 +74,7 @@ class DatabaseClient {
         ];
 
         try {
-            const result = await this.pool.query(query, values);
+            await this.pool.query(query, values);
             logger.debug(
                 { vitals_id: vitals.id, patient_id: vitals.patient_id },
                 'Vitals inserted'

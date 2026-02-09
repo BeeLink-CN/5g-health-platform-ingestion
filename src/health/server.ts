@@ -27,7 +27,7 @@ class HealthServer {
     }
 
     private setupRoutes(): void {
-        this.server.get('/health', async (request, reply) => {
+        this.server.get('/health', async (_request, reply) => {
             const checks = {
                 database: await db.isHealthy(),
                 mqtt: await mqttSubscriber.isHealthy(),
@@ -45,7 +45,7 @@ class HealthServer {
             return reply.status(statusCode).send(status);
         });
 
-        this.server.get('/ready', async (request, reply) => {
+        this.server.get('/ready', async (_request, reply) => {
             const ready =
                 db.isConnected() &&
                 mqttSubscriber.isConnected() &&
@@ -58,7 +58,7 @@ class HealthServer {
             }
         });
 
-        this.server.get('/', async (request, reply) => {
+        this.server.get('/', async (_request, reply) => {
             return reply.send({
                 service: '5g-health-platform-ingestion',
                 version: '1.0.0',
