@@ -1,6 +1,11 @@
 {
     "compilerOptions": {
         "target": "ES2022",
+        "types": [
+            "node",
+            "jest",
+            "pg"
+        ],
         "module": "commonjs",
         "lib": [
             "ES2022"
