@@ -1,4 +1,4 @@
-import { schemaValidator } from '../schema-validator';
+import { schemaValidator } from './schema-validator';
 
 describe('SchemaValidator', () => {
     beforeAll(async () => {
@@ -13,7 +13,7 @@ describe('SchemaValidator', () => {
         it('should validate a correct vitals record', async () => {
             const validVitals = {
                 id: '123e4567-e89b-12d3-a456-426614174000',
-                patient_id: 'patient-001',
+                patient_id: '123e4567-e89b-12d3-a456-426614174001',
                 recorded_at: '2024-01-01T12:00:00Z',
                 heart_rate: 72,
                 blood_pressure: {
@@ -21,7 +21,7 @@ describe('SchemaValidator', () => {
                     diastolic: 80,
                 },
                 temperature: 37.0,
-                oxygen_saturation: 98.5,
+                oxygen_saturation: 98,
                 device_id: 'device-001',
             };
 
@@ -62,10 +62,10 @@ describe('SchemaValidator', () => {
                 event_id: '123e4567-e89b-12d3-a456-426614174001',
                 timestamp: '2024-01-01T12:00:00Z',
                 payload: {
-                    patient_id: 'patient-001',
+                    patient_id: '123e4567-e89b-12d3-a456-426614174001',
                     vitals: {
                         id: '123e4567-e89b-12d3-a456-426614174000',
-                        patient_id: 'patient-001',
+                        patient_id: '123e4567-e89b-12d3-a456-426614174001',
                         recorded_at: '2024-01-01T12:00:00Z',
                         heart_rate: 72,
                     },
